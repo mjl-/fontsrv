@@ -1,0 +1,15 @@
+<../../mkconfig
+
+TARG=\
+	fontsrv.dis\
+
+SYSMODULES=\
+	arg.m\
+	bufio.m\
+	draw.m\
+	string.m\
+	sys.m\
+
+DISBIN=$ROOT/dis
+
+<$ROOT/mkfiles/mkdis

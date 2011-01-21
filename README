@@ -1,0 +1,44 @@
+# status
+
+first bits work.
+
+
+# intro
+
+fontsrv is a translation serves for font descriptions to inferno
+(sub)font files.  font descriptions contain:  a name, a style
+(regular, italic, bold, italic & bold), and a size with optional
+size offset.
+
+fontsrv serves the file "fs", typically mounted at /fonts.  a write
+to the file sets the request, a read returns the answer.
+
+fontsrv reads a description of available fonts and name aliases.
+
+
+# install
+
+make sure $ROOT is set.  now "mk install" to compile and install the
+files.
+
+when building from within inferno, insert SYSHOST=Inferno and ROOT=
+in the mk invocations to override the values in the mkconfig.
+
+
+# latest version
+
+the latest version can be found at:
+
+    http://www.ueber.net/code/r/fontsrv
+
+
+# licence & author
+
+all files are in the public domain.  this code has been written by
+mechiel lukkien, reachable at mechiel@ueber.net.
+
+
+# todo
+
+- figure out if font-spec is good enough.
+- figure out what to do with Qfsctl.
