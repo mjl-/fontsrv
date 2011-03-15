@@ -1,19 +1,42 @@
 # status
 
-first bits work.
+second revision, usable but may change.
 
 
 # intro
 
-fontsrv is a translation serves for font descriptions to inferno
-(sub)font files.  font descriptions contain:  a name, a style
-(regular, italic, bold, italic & bold), and a size with optional
-size offset.
+fontsrv is a translation service for fonts.  given a font query, a
+path to an Inferno font is returned.  the command-line options and
+rules file configure how queries are translated and which fonts are
+available.  the basic functionality of translating a query is
+provided by fontsrv through 9P2000:  a write to the "lookup" file
+sets the query, a subsequent read retrieves the font path.
 
-fontsrv serves the file "fs", typically mounted at /fonts.  a write
-to the file sets the request, a read returns the answer.
+wm/showfont is a simple program to lookup & display fonts.
 
-fontsrv reads a description of available fonts and name aliases.
+see the manual page for more information.
+
+the translation service is not normally used directly.  libdraw can
+be changed to lookup font paths.  the sources of these paths are:
+
+- Font.open calls in limbo programs
+- "-font" options in the Tk library
+
+Font.open calls have to be modified in limbo code:  prepending the
+program name followed by a dot makes it a valid font query.
+
+libtk, and the tkclient(2) and wmclient(2) libraries can be
+modified to prepend a program name to each parameter to "-font".
+thus, in tk, the form "fontnames.styles.sizes" must be used.  the
+program name is initially set to the title of the window.  it can
+be changed by the new tk command "topname".
+
+modifications to libdraw and libtk are implemented by inferno-fontsrv.diff,
+a diff against the inferno-os repository.  it also changes limbo
+programs that call Font.open, and enables the freetype byte code
+interpreter.  this patch should be considered experimental.  after
+installing it, look at /fonts/fixed/ and /fonts/ttf/ for instructions
+on fetching additional fonts.
 
 
 # install
@@ -24,12 +47,14 @@ files.
 when building from within inferno, insert SYSHOST=Inferno and ROOT=
 in the mk invocations to override the values in the mkconfig.
 
+also see the patch described in the "intro" section of this file.
+
 
 # latest version
 
 the latest version can be found at:
 
-    http://www.ueber.net/code/r/fontsrv
+	http://www.ueber.net/code/r/fontsrv
 
 
 # licence & author
@@ -40,5 +65,5 @@ mechiel lukkien, reachable at mechiel@ueber.net.
 
 # todo
 
-- figure out if font-spec is good enough.
-- figure out what to do with Qfsctl.
+- selection based on glyph ranges in a font?
+- perhaps use entire font height as font size?  or fudge the knownfonts[] a bit more?

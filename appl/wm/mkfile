@@ -1,17 +1,17 @@
 <../../mkconfig
 
 TARG=\
-	fontsrv.dis\
+	showfonts.dis\
 
 SYSMODULES=\
 	arg.m\
 	bufio.m\
 	draw.m\
-	names.m\
-	readdir.m\
 	string.m\
 	sys.m\
+	tk.m\
+	tkclient.m\
 
-DISBIN=$ROOT/dis
+DISBIN=$ROOT/dis/wm
 
 <$ROOT/mkfiles/mkdis

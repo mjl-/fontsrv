@@ -2,5 +2,6 @@
 
 DIRS=\
 	cmd\
+	wm\
 
 <$ROOT/mkfiles/mksubdirs

@@ -1,0 +1,618 @@
+diff -r 054335dfb712 -r 40e59ef09c78 appl/acme/acme.b
+--- a/appl/acme/acme.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/acme/acme.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -242,10 +242,10 @@
+ 	workdir = nil;
+ 
+ 	graph->binit();
+-	font = Font.open(display, fontnames[0]);
++	font = Font.open(display, "Acme."+fontnames[0]);
+ 	if(font == nil){
+ 		fontnames[0] = deffontnames[0];
+-		font = Font.open(display, fontnames[0]);
++		font = Font.open(display, "Acme."+fontnames[0]);
+ 		if (font == nil) {
+ 			warning(nil, sprint("can't open font file %s: %r\n", fontnames[0]));
+ 			return;
+@@ -834,7 +834,7 @@
+ 				break;
+ 			}
+ 		if (i >= nfontcache) {
+-			f = Font.open(display, name);
++			f = Font.open(display, "Acme."+name);
+ 			if(f == nil){
+ 				warning(nil, sprint("can't open font file %s: %r\n", name));
+ 				return nil;
+diff -r 054335dfb712 -r 40e59ef09c78 appl/charon/layout.b
+--- a/appl/charon/layout.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/charon/layout.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -1084,7 +1084,7 @@
+ {
+ 	f := fonts[num].f;
+ 	if(f == nil) {
+-		f = Font.open(display, fonts[num].name);
++		f = Font.open(display, "Charon."+fonts[num].name);
+ 		if(f == nil) {
+ 			if(num == DefFnt)
+ 				raise sys->sprint("exLayout: can't open default font %s: %r", fonts[num].name);
+diff -r 054335dfb712 -r 40e59ef09c78 appl/cmd/mc.b
+--- a/appl/cmd/mc.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/cmd/mc.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -128,7 +128,7 @@
+ 	if(nf != 8)
+ 		return;
+ 	f0 := tl tl tl tl tl f;
+-	if((font = Font.open(ctxt.display, hd tl f0)) == nil)
++	if((font = Font.open(ctxt.display, "Mc."+hd tl f0)) == nil)
+ 		return;
+ 	tabwid = int hd tl tl f0;
+ 	mintab = font.width("0");	
+diff -r 054335dfb712 -r 40e59ef09c78 appl/cmd/touchcal.b
+--- a/appl/cmd/touchcal.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/cmd/touchcal.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -114,9 +114,9 @@
+ 	#	err(sys->sprint("can't read old values from /dev/touchctl: %r"));
+ 	#oldvalues = oldvalues[0:nr];
+ 	sys->fprint(ctl, "X %d %d %d\nY %d %d %d\n", FX(1,1), 0, 0, 0, FX(1,1), 0);	# identity
+-	font := Font.open(display, sys->sprint("/fonts/lucida/unicode.%d.font", 6+(r.dx()/512)));
++	font := Font.open(display, sys->sprint("Touchcal./fonts/lucida/unicode.%d.font", 6+(r.dx()/512)));
+ 	if(font == nil)
+-		font = Font.open(display, "*default*");
++		font = Font.open(display, "Touchcal.*default*");
+ 	if(font != nil){
+ 		drawtext(disp, midpoint, black, font, prompt);
+ 		font = nil;
+diff -r 054335dfb712 -r 40e59ef09c78 appl/collab/clients/whiteboard.b
+--- a/appl/collab/clients/whiteboard.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/collab/clients/whiteboard.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -82,9 +82,9 @@
+ 
+ 	tkclient->init();
+ 	(win, winctl) := tkclient->toplevel(ctxt, nil, "Whiteboard", 0);
+-	font = Font.open(disp, tkcmd(win, ". cget -font"));
++	font = Font.open(disp, "Whiteboard."+tkcmd(win, ". cget -font"));
+ 	if(font == nil)
+-		font = Font.open(disp, "*default*");
++		font = Font.open(disp, "Whiteboard.*default*");
+ 	cmd := chan of string;
+ 	tk->namechan(win, cmd, "cmd");
+ 	tkcmds(win, tksetup);
+diff -r 054335dfb712 -r 40e59ef09c78 appl/demo/camera/tkinterface.b
+--- a/appl/demo/camera/tkinterface.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/demo/camera/tkinterface.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -77,7 +77,7 @@
+ 	selectfile->init();
+ 	readjpg = load Readjpg Readjpg->PATH;
+ 	readjpg->init(display);
+-	font = draw->Font.open(display, "/fonts/charon/plain.small.font");
++	font = draw->Font.open(display, "Camera./fonts/charon/plain.small.font");
+ 	runfrom := hd argv;
+ 	p := isat2(runfrom,"/");
+ 	savepath = runfrom[:p+1];
+diff -r 054335dfb712 -r 40e59ef09c78 appl/demo/whiteboard/whiteboard.b
+--- a/appl/demo/whiteboard/whiteboard.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/demo/whiteboard/whiteboard.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -76,9 +76,9 @@
+ 
+ 	tkclient->init();
+ 	(win, winctl) := tkclient->toplevel(ctxt, nil, "Whiteboard", 0);
+-	font = Font.open(disp, tkcmd(win, ". cget -font"));
++	font = Font.open(disp, "Whiteboard."+tkcmd(win, ". cget -font"));
+ 	if(font == nil)
+-		font = Font.open(disp, "*default*");
++		font = Font.open(disp, "Whiteboard.*default*");
+ 	cmd := chan of string;
+ 	tk->namechan(win, cmd, "cmd");
+ 	mkpenimgs(win);
+diff -r 054335dfb712 -r 40e59ef09c78 appl/ebook/cssfont.b
+--- a/appl/ebook/cssfont.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/ebook/cssfont.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -65,7 +65,7 @@
+ 		# when a font of a particular class was asked for.
+ 		maxheight := 0;
+ 		for (j := 0; j < len fpaths; j++) {
+-			if ((fontinfo[i][j] = f := Font.open(displ, fpaths[j])) == nil) {
++			if ((fontinfo[i][j] = f := Font.open(displ, "Ebook."+fpaths[j])) == nil) {
+ 				sys->fprint(sys->fildes(2), "cssfont: font %s unavailable: %r\n", fpaths[j]);
+ 				raise "fail:font unavailable";
+ 			}
+diff -r 054335dfb712 -r 40e59ef09c78 appl/lib/tkclient.b
+--- a/appl/lib/tkclient.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/lib/tkclient.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -48,6 +48,10 @@
+ toplevel(ctxt: ref Draw->Context, topconfig: string, title: string, buts: int): (ref Tk->Toplevel, chan of string)
+ {
+ 	wm := wmlib->connect(ctxt);
++	t: string;
++	for(i := 0; i < len title; i++)
++		if(title[i] != '.')
++			t[len t] = title[i];
+ 	opts := "";
+ 	if((buts & Plain) == 0)
+ 		opts = "-borderwidth 1 -relief raised ";
+@@ -60,6 +64,9 @@
+ 	readscreenrect(top);
+ 	c := titlebar->new(top, buts);
+ 	titlebar->settitle(top, title);
++
++	tk->cmd(top, "topname "+tk->quote(t));
++
+ 	return (top, c);
+ }
+ 
+diff -r 054335dfb712 -r 40e59ef09c78 appl/lib/volume.b
+--- a/appl/lib/volume.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/lib/volume.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -65,7 +65,7 @@
+ 	white = display.color(draw->White);
+ 	red = display.color(draw->Red);
+ 
+-	textfont := Font.open(display, "*default*");
++	textfont := Font.open(display, "Volumectl.*default*");
+ 
+ 	style = ref Style(
+ 			textfont,			# titlefont
+diff -r 054335dfb712 -r 40e59ef09c78 appl/lib/wmclient.b
+--- a/appl/lib/wmclient.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/lib/wmclient.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -97,6 +97,11 @@
+ 	w.ctl = titlebar->new(top, buts);
+ 	titlebar->settitle(top, title);
+ 	sizetb(w);
++	t: string;
++	for(i := 0; i < len title; i++)
++		if(title[i] != '.')
++			t[len t] = title[i];
++	tk->cmd(top, "topname "+tk->quote(t));
+ 	w.wmctl("fixedorigin");
+ 	return w;
+ }
+diff -r 054335dfb712 -r 40e59ef09c78 appl/spree/clients/cards.b
+--- a/appl/spree/clients/cards.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/spree/clients/cards.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -264,7 +264,7 @@
+ 	tkclient->startinput(win, "kbd"::"ptr"::nil);
+ 
+ 	fontname := cmd(win, ".c cget -font");
+-	cvsfont = Font.open(drawctxt.display, fontname);
++	cvsfont = Font.open(drawctxt.display, "SpreeCards."+fontname);
+ 	if (cvsfont == nil) {
+ 		sys->fprint(stderr, "cards: cannot open font %s: %r\n", fontname);
+ 		raise "fail:error";
+diff -r 054335dfb712 -r 40e59ef09c78 appl/wm/brutus/mod.b
+--- a/appl/wm/brutus/mod.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/wm/brutus/mod.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -80,7 +80,7 @@
+ 	for(i:=0; i < NFONT; i++) {
+ 		if(i == Bold || fontref[i] != nil)
+ 			continue;
+-		fontref[i] = Font.open(d, fontname[i]);
++		fontref[i] = Font.open(d, "Brutus."+fontname[i]);
+ 		if(fontref[i] == nil)
+ 			return sys->sprint("can't open font %s: %r\n", fontname[i]);
+ 	}
+diff -r 054335dfb712 -r 40e59ef09c78 appl/wm/brutus/table.b
+--- a/appl/wm/brutus/table.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/wm/brutus/table.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -593,7 +593,7 @@
+ 	for(i := 0; i < NFONTTAG; i++) {
+ 		if(fontused[i] && fontrefs[i] == nil) {
+ 			fname := fontnames[i];
+-			f := Font.open(display, fname);
++			f := Font.open(display, "Brutus."+fname);
+ 			if(f == nil)
+ 				return sys->sprint("can't open font %s: %r", fname);
+ 			fontrefs[i] = f;
+diff -r 054335dfb712 -r 40e59ef09c78 appl/wm/c4.b
+--- a/appl/wm/c4.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/wm/c4.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -658,7 +658,7 @@
+ # {
+ #	swidth = int cmd(mainwin, ".f1.txt cget -width");	# always initial value ?
+ #	f := cmd(mainwin, ".f1.txt cget -font");
+-#	sfont = Font.open(brdimg.display, f);
++#	sfont = Font.open(brdimg.display, "C4."+f);
+ # }
+ 	
+ puts(s: string)
+diff -r 054335dfb712 -r 40e59ef09c78 appl/wm/calendar.b
+--- a/appl/wm/calendar.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/wm/calendar.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -462,11 +462,11 @@
+ # save the highlands and islands, which belong to macbraynes"
+ Cal.make(top: ref Tk->Toplevel, sched: ref Schedule, w: string): (ref Cal, chan of string)
+ {
+-	f := Font.open(top.display, font);
++	f := Font.open(top.display, "Calendar."+font);
+ 	if (f == nil) {
+ 		sys->fprint(stderr, "cal: could not open font %s: %r\n", font);
+ 		font = cmd(top, ". cget -font");
+-		f = Font.open(top.display, font);
++		f = Font.open(top.display, "Calendar."+font);
+ 	}
+ 	if (f == nil)
+ 		return (nil, nil);
+diff -r 054335dfb712 -r 40e59ef09c78 appl/wm/ftree/items.b
+--- a/appl/wm/ftree/items.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/wm/ftree/items.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -236,7 +236,7 @@
+ 		return knownfontheight;
+ 	if (win.image == nil)			# can happen if we run out of image memory
+ 		return -1;
+-	f := Font.open(win.image.display, font);
++	f := Font.open(win.image.display, "Ftree."+font);
+ 	if (f == nil)
+ 		return -1;
+ 	knownfont = font;
+diff -r 054335dfb712 -r 40e59ef09c78 appl/wm/man.b
+--- a/appl/wm/man.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/wm/man.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -130,11 +130,11 @@
+ 
+ 	argv = tl argv;
+ 
+-	rfont = Font.open(ctxt.display, ROMAN);
+-	bfont = Font.open(ctxt.display, BOLD);
+-	ifont = Font.open(ctxt.display, ITALIC);
+-	h1font = Font.open(ctxt.display, HEADING1);
+-	h2font = Font.open(ctxt.display, HEADING2);
++	rfont = Font.open(ctxt.display, "Man."+ROMAN);
++	bfont = Font.open(ctxt.display, "Man."+BOLD);
++	ifont = Font.open(ctxt.display, "Man."+ITALIC);
++	h1font = Font.open(ctxt.display, "Man."+HEADING1);
++	h2font = Font.open(ctxt.display, "Man."+HEADING2);
+ 
+ 	em := rfont.width("m");
+ 	en := rfont.width("n");
+diff -r 054335dfb712 -r 40e59ef09c78 appl/wm/minitel/mdisplay.b
+--- a/appl/wm/minitel/mdisplay.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/wm/minitel/mdisplay.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -155,13 +155,13 @@
+ 
+ 	cellmap = array [ncols * nrows] of Cellinfo;
+ 	
+-	font		= Font.open(display, fontpath);
+-	fontw	= Font.open(display, fontpath + "w");
+-	fonth	= Font.open(display, fontpath + "h");
+-	fonts		= Font.open(display, fontpath + "s");
+-	fontg1	= Font.open(display, fontpath + "g1");
+-	fontfr	= Font.open(display, fontpath + "fr");
+-	fontusa	= Font.open(display, fontpath + "usa");
++	font		= Font.open(display, "Minitel."+fontpath);
++	fontw	= Font.open(display, "Minitel."+fontpath + "w");
++	fonth	= Font.open(display, "Minitel."+fontpath + "h");
++	fonts		= Font.open(display, "Minitel."+fontpath + "s");
++	fontg1	= Font.open(display, "Minitel."+fontpath + "g1");
++	fontfr	= Font.open(display, "Minitel."+fontpath + "fr");
++	fontusa	= Font.open(display, "Minitel."+fontpath + "usa");
+ 
+ 	if (font != nil)
+ 		cellsize = Point(font.width(" "), font.height);
+diff -r 054335dfb712 -r 40e59ef09c78 appl/wm/reversi.b
+--- a/appl/wm/reversi.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/wm/reversi.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -814,7 +814,7 @@
+ # {
+ #	swidth = int cmd(mainwin, ".f1.txt cget -width");	# always initial value ?
+ #	f := cmd(mainwin, ".f1.txt cget -font");
+-#	sfont = Font.open(brdimg.display, f);
++#	sfont = Font.open(brdimg.display, "Reversi."+f);
+ # }
+ 	
+ puts(s: string)
+diff -r 054335dfb712 -r 40e59ef09c78 appl/wm/sh.b
+--- a/appl/wm/sh.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/wm/sh.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -223,11 +223,8 @@
+ 	for (i := 0; i < len shwin_cfg; i++)
+ 		cmd(t, shwin_cfg[i]);
+ 	(menuw, nil) := itemsize(t, ".m");
+-	if (font != nil) {
+-		if (font[0] != '/' && (len font == 1 || font[0:2] != "./"))
+-			font = "/fonts/" + font;
+-		cmd(t, ".ft.t configure -font " + font);
+-	}
++	if (font != nil)
++		cmd(t, ".ft.t configure -font " + tk->quote(font));
+ 	cmd(t, ".ft.t configure -width 65w -height 20h");
+ 	cmd(t, "pack propagate . 0");
+ 	if(width != nil)
+diff -r 054335dfb712 -r 40e59ef09c78 appl/wm/vt.b
+--- a/appl/wm/vt.b	Wed Mar 02 22:16:28 2011 +0000
++++ b/appl/wm/vt.b	Wed Mar 09 18:23:42 2011 +0100
+@@ -146,7 +146,7 @@
+ 	(t, menubut) = tkclient->toplevel(ctxt, "", "WmVt", Tkclient->Appl);
+ 
+ 	display = ctxt.display;	
+-	font = Font.open(display, "*default*");
++	font = Font.open(display, "Vt.*default*");
+ 
+ 	vt = ref Vt;
+ 	vt.hgt = 24;
+diff -r 054335dfb712 -r 40e59ef09c78 fonts/fixed/fixed.sh
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/fonts/fixed/fixed.sh	Wed Mar 09 18:23:42 2011 +0100
+@@ -0,0 +1,25 @@
++#!/dis/sh.dis
++mount -A net!sources.cs.bell-labs.com!9fs /n/sources
++fcp -R 32 -W 1 /n/sources/plan9/lib/font/bit/fixed/* .
++mv unicode.4x6.font	fixed-mono.r.4.font
++mv unicode.5x7.font	fixed-mono.r.5.font
++mv unicode.5x8.font	fixed-mono.r.6.font
++mv unicode.6x9.font	fixed-mono.r.7.font
++mv unicode.6x10.font	fixed-mono.r.8.font
++mv unicode.6x12.font	fixed-mono.r.9.font
++mv unicode.6x13.font	fixed-mono.r.10.font
++mv unicode.6x13B.font	fixed-mono.b.10.font
++mv unicode.6x13O.font	fixed-mono.i.10.font
++mv unicode.7x13.font	fixed-mono.r.11.font
++mv unicode.7x13B.font	fixed-mono.b.11.font
++mv unicode.7x13O.font	fixed-mono.i.11.font
++mv unicode.7x14.font	fixed-mono.r.12.font
++mv unicode.7x14B.font	fixed-mono.b.12.font
++mv unicode.8x13.font	fixedw-mono.r.13.font
++mv unicode.8x13B.font	fixedw-mono.b.13.font
++mv unicode.8x13O.font	fixedw-mono.i.13.font
++mv unicode.9x15.font	fixed-mono.r.13.font
++mv unicode.9x15B.font	fixed-mono.b.13.font
++mv unicode.9x18.font	fixed-mono.r.14.font
++mv unicode.9x18B.font	fixed-mono.b.14.font
++mv unicode.10x20.font	fixed-mono.r.15.font
+diff -r 054335dfb712 -r 40e59ef09c78 fonts/ttf/dejavu.txt
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/fonts/ttf/dejavu.txt	Wed Mar 09 18:23:42 2011 +0100
+@@ -0,0 +1,10 @@
++fetch dejavu ttf fonts from:
++
++	http://dejavu-fonts.org/wiki/Download
++
++place *.ttf in this directory.
++when running ttffs, it will read through the fonts to determine the
++available glyph ranges.  reloading fontsrv will make ttffs do the
++same:
++
++	echo reload >/mnt/font/ctl
+diff -r 054335dfb712 -r 40e59ef09c78 include/draw.h
+--- a/include/draw.h	Wed Mar 02 22:16:28 2011 +0000
++++ b/include/draw.h	Wed Mar 09 18:23:42 2011 +0100
+@@ -535,7 +535,7 @@
+ /*
+  * Inferno interface
+  */
+-extern	Font*	font_open(Display*, char*);
++extern	Font*	font_open(Display*, char*, char*, int);
+ extern	void	font_close(Font*);
+ 
+ /*
+diff -r 054335dfb712 -r 40e59ef09c78 include/freetype/config/ftoption.h
+--- a/include/freetype/config/ftoption.h	Wed Mar 02 22:16:28 2011 +0000
++++ b/include/freetype/config/ftoption.h	Wed Mar 09 18:23:42 2011 +0100
+@@ -378,7 +378,7 @@
+   /*   do not #undef this macro here, since the build system might         */
+   /*   define for certain configurations                                   */
+   /*                                                                       */
+-/*#define  TT_CONFIG_OPTION_BYTECODE_INTERPRETER*/
++#define  TT_CONFIG_OPTION_BYTECODE_INTERPRETER
+ 
+ 
+   /*************************************************************************/
+diff -r 054335dfb712 -r 40e59ef09c78 include/tk.h
+--- a/include/tk.h	Wed Mar 02 22:16:28 2011 +0000
++++ b/include/tk.h	Wed Mar 09 18:23:42 2011 +0100
+@@ -578,6 +578,7 @@
+ 	TkImg*		imgs;
+ 	TkPanelimage*	panelimages;
+ 	TkAction*	binds[TKwidgets];
++	char*		name;
+ 	int		debug;
+ 	int		execdepth;
+ 	char		focused;
+@@ -611,6 +612,7 @@
+ extern	char*	tklower(TkTop*, char*, char**);
+ extern	char*	tkmenu(TkTop*, char*, char**);
+ extern	char*	tkmenubutton(TkTop*, char*, char**);
++extern	char*	tktopname(TkTop*, char*, char**);
+ extern	char*	tkpack(TkTop*, char*, char**);
+ extern	char*	tkpanel(TkTop*, char*, char**);
+ extern	char*	tkputs(TkTop*, char*, char**);
+diff -r 054335dfb712 -r 40e59ef09c78 libinterp/draw.c
+--- a/libinterp/draw.c	Wed Mar 02 22:16:28 2011 +0000
++++ b/libinterp/draw.c	Wed Mar 09 18:23:42 2011 +0100
+@@ -1454,7 +1454,7 @@
+ 	disp = checkdisplay(f->d);
+ 
+ 	name = string2c(f->name);
+-	font = font_open(disp, name);
++	font = font_open(disp, nil, name, 0);
+ 	if(font == nil) {
+ 		if(strcmp(name, deffontname) == 0) {
+ 			df = disp->defaultsubfont;
+@@ -1494,12 +1494,61 @@
+ 	*f->ret = &dfont->drawfont;
+ }
+ 
++char*
++fonttranslate(char *s)
++{
++	int fd, n;
++	char *p, *e;
++	char *r = nil;
++
++	fd = kopen("/mnt/font/lookup", ORDWR);
++	if(fd < 0)
++		return nil;
++
++	n = strlen(s);
++	if(kwrite(fd, s, n) == n) {
++		p = malloc(1024+1);
++		if(p != nil && (n = kread(fd, p, 1024)) > 0) {
++			p[n] = '\0';
++			e = strchr(p, '\n');
++			if(e != nil) {
++				*e = '\0';
++				r = strdup(p);
++			}
++		}
++		free(p);
++	}
++	kclose(fd);
++	return r;
++}
++
+ Font*
+-font_open(Display *display, char *name)
++font_open(Display *display, char *prog, char *name, int tr)
+ {
+ 	Cache *c;
+ 	Font *font;
+ 	int locked;
++	char *n, *s;
++	int freename = 0;
++
++if(0)fprint(2, "font_open %q %q %d\n", prog, name, tr);
++	if(tr) {
++		if(prog == nil || *prog == '\0')
++			prog = "?";
++		if(tr == 1)
++			s = smprint("%s.%s", prog, name);
++		else
++			s = strdup(name);
++		release();
++		n = fonttranslate(s);
++		if(n != nil) {
++			freename = 1;
++			name = n;
++		}
++		acquire();
++if(0)fprint(2, "font_open %q -> %q\n", s, name);
++		free(s);
++	}
+ 
+ 	c = cachelookup(fcache, display, name);
+ 	if(c)
+@@ -1509,13 +1558,18 @@
+ 		font = openfont(display, name);
+ 		if(locked)
+ 			unlockdisplay(display);
+-		if(font == nil)
++		if(font == nil) {
++			if(freename)
++				free(name);
+ 			return nil;
++		}
+ 		c = cacheinstall(fcache, display, name, font, "font");
+ 	}
+ 	if(c)
+ 		c->ref++;
+ 
++	if(freename)
++		free(name);
+ 	return font;
+ }
+ 
+@@ -1630,7 +1684,7 @@
+ 	*f->ret = H;
+ 	disp = checkdisplay(f->d);
+ 
+-	font = font_open(disp, string2c(f->name));
++	font = font_open(disp, nil, string2c(f->name), 2);
+ 	if(font == 0)
+ 		return;
+ 
+diff -r 054335dfb712 -r 40e59ef09c78 libinterp/tk.c
+--- a/libinterp/tk.c	Wed Mar 02 22:16:28 2011 +0000
++++ b/libinterp/tk.c	Wed Mar 09 18:23:42 2011 +0100
+@@ -103,6 +103,7 @@
+ 
+ 	t->execdepth = -1;
+ 	t->display = disp;
++	t->name = nil;
+ 
+ 	tk = tknewobj(t, TKframe, sizeof(Tk)+sizeof(TkWin));
+ 	if(tk == nil) {
+@@ -1007,6 +1008,8 @@
+ 		if(t->binds[wgtype])
+ 			tkfreebind(t->binds[wgtype]);
+ 
++	free(t->name);
++
+ 	unlockctxt(t->ctxt);
+ 	/* XXX should we leave it locked for this bit? */
+ 	tkfreectxt(t->ctxt);
+diff -r 054335dfb712 -r 40e59ef09c78 libtk/parse.c
+--- a/libtk/parse.c	Wed Mar 02 22:16:28 2011 +0000
++++ b/libtk/parse.c	Wed Mar 09 18:23:42 2011 +0100
+@@ -777,7 +777,7 @@
+ 		return TkOparg;
+ 
+ 	d = t->display;
+-	font = font_open(d, buf);
++	font = font_open(d, t->name, buf, 1);
+ 	if(font == nil)
+ 		return TkBadft;
+ 
+diff -r 054335dfb712 -r 40e59ef09c78 libtk/utils.c
+--- a/libtk/utils.c	Wed Mar 02 22:16:28 2011 +0000
++++ b/libtk/utils.c	Wed Mar 09 18:23:42 2011 +0100
+@@ -49,6 +49,7 @@
+ 	"see",	tkseecmd,
+ 	"send",		tksend,
+ 	"text",		tktext,
++	"topname",	tktopname,
+ 	"update",	tkupdatecmd,
+ 	"variable",	tkvariable,
+ 	"winfo",	tkwinfo,
+@@ -489,14 +490,14 @@
+ 		tkfont = "/fonts/pelm/unicode.8.font";
+ 
+ 	d = t->display;
+-	env->font = font_open(d, tkfont);
++	env->font = font_open(d, t->name, tkfont, 1);
+ 	if(env->font == nil) {
+ 		static int warn;
+ 		if(warn == 0) {
+ 			warn = 1;
+ 			print("tk: font not found: %s\n", tkfont);
+ 		}
+-		env->font = font_open(d, "*default*");
++		env->font = font_open(d, nil, "*default*", 0);
+ 		if(env->font == nil) {
+ 			free(t->env);
+ 			t->env = nil;
+@@ -560,7 +561,7 @@
+ 	d = e->top->display;
+ 	memmove(ne->colors, e->colors, sizeof(e->colors));
+ 	ne->set = e->set;
+-	ne->font = font_open(d, e->font->name);
++	ne->font = font_open(d, nil, e->font->name, 0);
+ 	ne->wzero = e->wzero;
+ 
+ 	e->ref--;
+@@ -2122,3 +2123,27 @@
+ 			tkdump(sub);
+ 	}
+ }
++
++char*
++tktopname(TkTop *t, char *arg, char **ret)
++{
++	int n;
++	char *s;
++	Font *f;
++
++	n = strlen(arg);
++	s = malloc(n+1);
++	if(s == nil)
++		return TkNomem;
++	tkword(t, arg, s, s+n+1, nil);
++	free(t->name);
++	t->name = s;
++
++	f = font_open(t->display, t->name, tkfont, 1);
++	if(f) {
++		if(t->env->font != nil)
++			font_close(t->env->font);
++		t->env->font = f;
++	}
++	return nil;
++}

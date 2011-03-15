@@ -1,0 +1,31 @@
+.TH SHOWFONTS 1
+.SH NAME
+showfonts \- display fonts
+.SH SYNOPSIS
+.B wm/showfonts
+[
+.I names
+.I styles
+.I sizes
+.I ...
+]
+.SH DESCRIPTION
+.B Showfonts
+is a simple Tk program that displays fonts.
+It has a tk entry for text to display in a font.
+Then three fields for selecting the fonts to show display the text in.
+Each field can have comma-separated values, they are expanded by showfonts and each combined fontspec is looked up individually and the resulting font displayed.
+Hitting return or clicking on the "add" button performs the lookup and displays the fonts.
+Clicking on the "name", "style" or "size" buttons presents you with a list of options to choose from, retrieved from the
+.LR /mnt/font/list
+file.
+This does not work when multiple values (comma-separated) are present in an earlier field.
+.SH FILES
+.B /mnt/font/lookup
+.br
+.B /mnt/font/list
+.SH SOURCE
+.B /appl/wm/showfonts.b
+.SH SEE ALSO
+.IR ttffs (4),
+.IR fontsrv (4)

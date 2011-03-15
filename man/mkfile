@@ -1,8 +1,7 @@
 <../mkconfig
 
-MAN=
+MAN=\
+	1/showfonts\
+	4/fontsrv\
 
 <mkman
-
-nuke:QV:
-	
